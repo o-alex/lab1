@@ -7,8 +7,8 @@ import org.apache.spark.ml.util._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions._
-
 import org.apache.spark.hack._
+import org.apache.spark.ml.feature.VectorSlicer
 import org.apache.spark.sql.Row
 import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.ml.linalg.Matrices
@@ -18,15 +18,20 @@ case class Instance(label: Double, features: Vector)
 
 object Helper {
   def rmse(labelsAndPreds: RDD[(Double, Double)]): Double = {
-    ???
+    labelsAndPreds.map(x=> Math.pow(x._1-x._2,2)).reduce(_+_)
   }
 
-  def predictOne(weights: Vector, features: Vector): Double = {
-    ???
+  def predictOne(weights: org.apache.spark.ml.linalg.Vector, features: org.apache.spark.ml.linalg.Vector): Double = {
+    if( weights.size != features.size) throw new IllegalArgumentException("Size of the input vectors does not match")
+    var res : Double = 0
+    for( i <- 0 to (weights.size -1 )){
+     res += weights.apply(i) * features.apply(i)
+    }
+    res
   }
 
   def predict(weights: Vector, data: RDD[Instance]): RDD[(Double, Double)] = {
-    ???
+    data.map(d=>(d.label, predictOne(weights, d.features)))
   }
 }
 
@@ -38,11 +43,13 @@ class MyLinearRegressionImpl(override val uid: String)
   override def copy(extra: ParamMap): MyLinearRegressionImpl = defaultCopy(extra)
 
   def gradientSummand(weights: Vector, lp: Instance): Vector = {
-    ???
+    val pred = Helper.predictOne(weights,lp.features)
+    val actual = lp.label
+    VectorHelper.dot(lp.features, (pred-actual))
   }
 
   def gradient(d: RDD[Instance], weights: Vector): Vector = {
-    ???
+    d.map(x=>gradientSummand(weights,x)).reduce((x,y)=>VectorHelper.sum(x,y))
   }
 
   def linregGradientDescent(trainData: RDD[Instance], numIters: Int): (Vector, Array[Double]) = {

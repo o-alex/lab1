@@ -15,9 +15,7 @@ object VectorHelper {
 
   def dot(v: Vector, s: Double): Vector = {
     val arr = v.toArray
-    for( i <- 0 to (v.size -1 )){
-      arr(i) *= s
-    }
+    arr.map(_*s)
     Vectors.dense(arr)
   }
 
@@ -32,9 +30,7 @@ object VectorHelper {
 
   def fill(size: Int, fillVal: Double): Vector = {
     var arr:Array[Double] = new Array(size)
-    for( i <- 0 to (size -1 )){
-     arr(i) = fillVal
-    }
+    arr.map(_=>fillVal)
     Vectors.dense(arr)
   }
 }

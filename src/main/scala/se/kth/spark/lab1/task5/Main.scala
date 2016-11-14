@@ -19,12 +19,6 @@ object Main {
     import sqlContext.implicits._
     import sqlContext._
 
-    import sqlContext.implicits._
-    import sqlContext._
-
-    import sqlContext.implicits._
-    import sqlContext._
-
     val filePath = "src/main/resources/millionsong.txt"
     val rawDF = sparkContext.textFile(filePath).toDF("col")
 
