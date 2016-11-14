@@ -3,7 +3,7 @@ package se.kth.spark.lab1.task6
 import org.apache.spark.ml.linalg.{DenseVector, Matrices, Vector, Vectors}
 
 object VectorHelper {
-  def dot(v1: Vector, v2: Vector): Double = {
+  def dot(v1: org.apache.spark.ml.linalg.Vector, v2: org.apache.spark.ml.linalg.Vector): Double = {
     if( v1.size != v2.size) throw new IllegalArgumentException("Size of the input vectors does not match")
 
     var res:Double = 0
@@ -13,13 +13,12 @@ object VectorHelper {
     res
   }
 
-  def dot(v: Vector, s: Double): Vector = {
+  def dot(v: org.apache.spark.ml.linalg.Vector, s: Double): org.apache.spark.ml.linalg.Vector = {
     val arr = v.toArray
-    arr.map(_*s)
-    Vectors.dense(arr)
+    Vectors.dense(arr.map(_*s))
   }
 
-  def sum(v1: Vector, v2: Vector): Vector = {
+  def sum(v1: org.apache.spark.ml.linalg.Vector, v2: org.apache.spark.ml.linalg.Vector): org.apache.spark.ml.linalg.Vector = {
     if( v1.size != v2.size) throw new IllegalArgumentException("Size of the input vectors does not match")
     var res:Array[Double] = new Array(v1.size)
     for( i <- 0 to (v1.size -1 )){
@@ -28,9 +27,8 @@ object VectorHelper {
     Vectors.dense(res)
   }
 
-  def fill(size: Int, fillVal: Double): Vector = {
+  def fill(size: Int, fillVal: Double): org.apache.spark.ml.linalg.Vector = {
     var arr:Array[Double] = new Array(size)
-    arr.map(_=>fillVal)
-    Vectors.dense(arr)
+    Vectors.dense(arr.map(_=>fillVal))
   }
 }

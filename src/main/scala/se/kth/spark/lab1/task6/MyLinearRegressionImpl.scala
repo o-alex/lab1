@@ -8,17 +8,17 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions._
 import org.apache.spark.hack._
-import org.apache.spark.ml.feature.VectorSlicer
 import org.apache.spark.sql.Row
 import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.ml.linalg.Matrices
 import org.apache.spark.mllib.evaluation.RegressionMetrics
 
-case class Instance(label: Double, features: Vector)
+case class Instance(label: Double, features: org.apache.spark.ml.linalg.Vector)
 
 object Helper {
   def rmse(labelsAndPreds: RDD[(Double, Double)]): Double = {
-    labelsAndPreds.map(x=> Math.pow(x._1-x._2,2)).reduce(_+_)
+    val v = labelsAndPreds.map(x=> Math.pow(x._1-x._2,2)).reduce(_+_)
+    v/labelsAndPreds.count()
   }
 
   def predictOne(weights: org.apache.spark.ml.linalg.Vector, features: org.apache.spark.ml.linalg.Vector): Double = {
@@ -30,8 +30,9 @@ object Helper {
     res
   }
 
-  def predict(weights: Vector, data: RDD[Instance]): RDD[(Double, Double)] = {
-    data.map(d=>(d.label, predictOne(weights, d.features)))
+  def predict(weights: org.apache.spark.ml.linalg.Vector, data: RDD[Instance]): RDD[(Double, Double)] = {
+    data.map(d=>(d.label, Helper.predictOne(weights, d.features)))
+//    data.map(d=>(d.label, d.label))
   }
 }
 
