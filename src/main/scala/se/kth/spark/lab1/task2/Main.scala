@@ -78,7 +78,7 @@ object Main {
     val pipelineModel = pipeline.fit(rawDF)
 
 
-    //Step10: transform data with the model - do predictions
+    //Step10: transform data with the model
     val testFilePath = "src/main/resources/test-data.txt"
     val testDF = sparkContext.textFile(testFilePath).toDF("col")
     var res = pipelineModel.transform(testDF)
@@ -90,9 +90,9 @@ object Main {
     //        println(s"($id, $text) --> prob=$prob, prediction=$prediction")
     //      }val filePath = "src/main/resources/millionsong.txt"
 
-    System.exit(0)
 
     //Step11: drop all columns from the dataframe other than label and features
-    ???
+    testDF.drop("col", "tokenks","allFeatures", "yearv", "year2d")
   }
+
 }
