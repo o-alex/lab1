@@ -14,7 +14,8 @@ import se.kth.spark.lab1.{Array2Vector, DoubleUDF, Vector2DoubleUDF}
 
 object Main {
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("lab1").setMaster("local")
+    val conf = new SparkConf().setAppName("lab1").setMaster("local[6]")
+
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 
@@ -56,7 +57,7 @@ object Main {
     val minYear:Double = 1922
     val mylabler : Double => Double = {_ - minYear}
     val lShifter = new DoubleUDF(mylabler).setInputCol("year2d").setOutputCol("label")
-    val fSlicer = new VectorSlicer().setInputCol("allFeatures").setOutputCol("features").setIndices(Array(0,1,2))
+    val fSlicer = new VectorSlicer().setInputCol("allFeatures").setOutputCol("features").setIndices(Array(1,2,3))
     val myLR = new MyLinearRegressionImpl()
 
     var lrStages = Array(regexTokenizer, arr2Vect, lSlicer, v2d, lShifter, fSlicer, myLR)

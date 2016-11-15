@@ -19,6 +19,7 @@ object Helper {
   def rmse(labelsAndPreds: RDD[(Double, Double)]): Double = {
     val v = labelsAndPreds.map(x=> Math.pow(x._1-x._2,2)).reduce(_+_)
     v/labelsAndPreds.count()
+    scala.math.sqrt(v/labelsAndPreds.count())
   }
 
   def predictOne(weights: org.apache.spark.ml.linalg.Vector, features: org.apache.spark.ml.linalg.Vector): Double = {
@@ -57,20 +58,32 @@ class MyLinearRegressionImpl(override val uid: String)
     val n = trainData.count()
     println("Training Data Size is "+n)
     val d = trainData.take(1)(0).features.size
-    var weights = VectorHelper.fill(d, 0)
-    val alpha = 1.0
-    val errorTrain = Array.fill[Double](numIters)(0.0)
+
+//    var weights = VectorHelper.fill(d, random.nextDouble())
+
+    val random = scala.util.Random
+    var arr:Array[Double] = new Array(d)
+    for(i <- 0 until d){
+     arr(i) = random.nextDouble()
+    }
+    var weights = Vectors.dense(arr)
+
+
+    val alpha = 0.54
+    val errorTrain = Array.fill[Double](numIters)(0)
 
     for (i <- 0 until numIters) {
       //compute this iterations set of predictions based on our current weights
       val labelsAndPredsTrain = Helper.predict(weights, trainData)
       //compute this iteration's RMSE
       errorTrain(i) = Helper.rmse(labelsAndPredsTrain)
+      println("RMSE for round "+i+" is: "+errorTrain(i))
 
       //compute gradient
       val g = gradient(trainData, weights)
       //update the gradient step - the alpha
-      val alpha_i = alpha / (n * scala.math.sqrt(i + 1))
+//      val alpha_i = alpha / (n * scala.math.sqrt(i + 1))
+      val alpha_i = alpha / (n )
       val wAux = VectorHelper.dot(g, (-1) * alpha_i)
       //update weights based on gradient
       weights = VectorHelper.sum(weights, wAux)
