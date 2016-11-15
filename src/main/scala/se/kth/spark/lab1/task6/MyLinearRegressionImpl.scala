@@ -31,8 +31,7 @@ object Helper {
   }
 
   def predict(weights: org.apache.spark.ml.linalg.Vector, data: RDD[Instance]): RDD[(Double, Double)] = {
-    data.map(d=>(d.label, Helper.predictOne(weights, d.features)))
-//    data.map(d=>(d.label, d.label))
+    data.map(d=>(d.label, predictOne(weights, d.features)))
   }
 }
 
@@ -56,6 +55,7 @@ class MyLinearRegressionImpl(override val uid: String)
   def linregGradientDescent(trainData: RDD[Instance], numIters: Int): (Vector, Array[Double]) = {
 
     val n = trainData.count()
+    println("Training Data Size is "+n)
     val d = trainData.take(1)(0).features.size
     var weights = VectorHelper.fill(d, 0)
     val alpha = 1.0

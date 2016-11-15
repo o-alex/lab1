@@ -6,9 +6,10 @@ import org.apache.spark.ml.feature.{PolynomialExpansion, RegexTokenizer, VectorA
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spark.ml.PipelineModel
 import org.apache.spark.ml.evaluation.RegressionEvaluator
-import org.apache.spark.ml.linalg.Vector
+import org.apache.spark.ml.linalg.{Vector, Vectors}
 import org.apache.spark.ml.regression.{LinearRegression, LinearRegressionModel}
 import org.apache.spark.ml.tuning.{CrossValidator, CrossValidatorModel, ParamGridBuilder}
+import org.apache.spark.rdd.RDD
 import se.kth.spark.lab1.{Array2Vector, DoubleUDF, Vector2DoubleUDF}
 
 object Main {
@@ -16,6 +17,29 @@ object Main {
     val conf = new SparkConf().setAppName("lab1").setMaster("local")
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
+
+//    def gradientSummand(weights: Vector, lp: Instance): Vector = {
+//      val pred = Helper.predictOne(weights,lp.features)
+//      val actual = lp.label
+//      VectorHelper.dot(lp.features, (pred-actual))
+//    }
+//
+//    val testdata = Array((Instance(1.0, Vectors.dense(1.0,1.0))), (Instance(2.0, Vectors.dense(2.0,2.0))))
+//    val rdd = sc.parallelize(testdata)
+//    val weights = Vectors.dense(Array(3.0,2.0))
+//    val lp = new Instance(1.0, Vectors.dense(1.0,1.0))
+//    val lp2 = new Instance(2.0, Vectors.dense(2.0,2.0))
+//    val r = gradientSummand(weights, lp)
+//    r.toArray.foreach(println)
+//    val r2 = gradientSummand(weights, lp2)
+//    r2.toArray.foreach(println)
+//    def gradient(d: RDD[Instance], weights: Vector): Vector = {
+//      d.map(x=>gradientSummand(weights,x)).reduce((x,y)=>VectorHelper.sum(x,y))
+//    }
+//
+//    val r3 = gradient(rdd,weights)
+//    r3.toArray.foreach(println)
+//    System.exit(0)
 
     import sqlContext.implicits._
     import sqlContext._
@@ -39,7 +63,8 @@ object Main {
     val pipeline = new Pipeline().setStages(lrStages)
     val pipelineModel:PipelineModel  = pipeline.fit(rawDF)
     val lrModel = pipelineModel.stages(6).asInstanceOf[MyLinearModelImpl]
-    println("Training error "+lrModel.trainingError.map(x=>x).reduce(_+_))
+    println("Training error ")
+    lrModel.trainingError.foreach(println)
 
 
     val testFilePath = "src/main/resources/test-data.txt"
