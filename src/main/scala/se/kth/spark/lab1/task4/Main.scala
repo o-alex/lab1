@@ -10,7 +10,7 @@ import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.ml.feature.{RegexTokenizer, VectorSlicer}
 import se.kth.spark.lab1.{Array2Vector, DoubleUDF, Vector2DoubleUDF}
 
-object Main {
+object task4 {
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("lab1").setMaster("local")
     val sc = new SparkContext(conf)

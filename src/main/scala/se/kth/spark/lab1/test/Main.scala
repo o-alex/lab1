@@ -12,7 +12,7 @@ import java.nio.charset.Charset
 
 case class Bank(age: Integer, job: String, marital: String, education: String, balance: Integer)
 
-object Main {
+object bankObj {
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("lab1").setMaster("local")
     val sc = new SparkContext(conf)

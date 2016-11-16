@@ -10,7 +10,7 @@ import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.ml.feature.{PolynomialExpansion, RegexTokenizer, VectorSlicer}
 import se.kth.spark.lab1.{Array2Vector, DoubleUDF, Vector2DoubleUDF}
 
-object Main {
+object task5 {
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("lab1").setMaster("local")
     val sc = new SparkContext(conf)
@@ -51,6 +51,7 @@ object Main {
     val pipelineModel:CrossValidatorModel  = cv.fit(rawDF)
     val bestModel = pipelineModel.bestModel.asInstanceOf[PipelineModel].stages(7).asInstanceOf[LinearRegressionModel]
     println("regParam: "+bestModel.getRegParam);
+    println("elasticNetParam: "+bestModel.elasticNetParam);
     println("maxItr: "+bestModel.getMaxIter);
     println("RMSE: "+ bestModel.summary.rootMeanSquaredError)
 

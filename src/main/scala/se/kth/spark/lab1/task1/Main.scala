@@ -8,7 +8,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{Row, SQLContext}
 
-object Main {
+object task1 {
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("lab1").setMaster("local")
     val sc = new SparkContext(conf)
