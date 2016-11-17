@@ -34,7 +34,7 @@ object task6 {
     val minYear:Double = 1922
     val mylabler : Double => Double = {_ - minYear}
     val lShifter = new DoubleUDF(mylabler).setInputCol("year2d").setOutputCol("label")
-    val fSlicer = new VectorSlicer().setInputCol("allFeatures").setOutputCol("features").setIndices(Array(1,2,3))
+    val fSlicer = new VectorSlicer().setInputCol("allFeatures").setOutputCol("features").setIndices(Array(1,2,3,4,5,6,7,8,9,10,11,12))
     val myLR = new MyLinearRegressionImpl()
 
     var lrStages = Array(regexTokenizer, arr2Vect, lSlicer, v2d, lShifter, fSlicer, myLR)
